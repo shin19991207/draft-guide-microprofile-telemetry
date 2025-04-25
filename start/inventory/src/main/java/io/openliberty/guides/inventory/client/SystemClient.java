@@ -22,13 +22,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
-public class SystemClient {
+public class SystemClient implements AutoCloseable {
 
     // Constants for building URI to the system service.
     private final String SYSTEM_PROPERTIES = "/system/properties";
     private final String PROTOCOL = "http";
 
     private String url;
+    private Client client;
     private Builder clientBuilder;
 
     public void init(String hostname, int port) {
@@ -39,7 +40,6 @@ public class SystemClient {
     private void initHelper(String hostname, int port) {
         this.url = buildUrl(PROTOCOL, hostname, port, SYSTEM_PROPERTIES);
         this.clientBuilder = buildClientBuilder(this.url);
-        System.out.println("SystemClient initialized with URL: " + this.url);
     }
 
     // Wrapper function that gets properties
@@ -73,7 +73,7 @@ public class SystemClient {
     // Method that creates the client builder
     protected Builder buildClientBuilder(String urlString) {
         try {
-            Client client = ClientBuilder.newClient();
+            this.client = ClientBuilder.newClient();
             Builder builder = client.target(urlString).request();
             return builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         } catch (Exception e) {
@@ -101,5 +101,12 @@ public class SystemClient {
                     + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public void close() {
+        if (client != null) {
+            client.close();
+        }
     }
 }

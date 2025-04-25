@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -59,5 +60,10 @@ public class InventoryManager {
         int propertiesClearedCount = systems.size();
         systems.clear();
         return propertiesClearedCount;
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        systemClient.close();
     }
 }

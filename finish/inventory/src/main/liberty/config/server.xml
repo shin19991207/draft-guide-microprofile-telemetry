@@ -19,9 +19,6 @@
 
     <webApplication location="guide-microprofile-telemetry-inventory.war"
                     contextRoot="/">
-        <!-- tag::thirdPartyComment[] -->
-        <!-- enable visibility to third party apis -->
-        <!-- end::thirdPartyComment[] -->
         <!-- tag::thirdParty[] -->
         <classloader apiTypeVisibility="+third-party"/>
         <!-- end::thirdParty[] -->
