@@ -64,8 +64,10 @@ public class SystemClient implements AutoCloseable {
             URI uri = new URI(protocol, null, host, port, path, null, null);
             return uri.toString();
         } catch (Exception e) {
+            // tag::out1[]
             System.out.println("URISyntaxException while building system service URL: "
                     + e.getMessage());
+            // end::out1[]
             return null;
         }
     }
@@ -77,8 +79,10 @@ public class SystemClient implements AutoCloseable {
             Builder builder = client.target(urlString).request();
             return builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         } catch (Exception e) {
+            // tag::out2[]
             System.out.println("Exception while creating REST client builder: "
                     + e.getMessage());
+            // end::out2[]
             return null;
         }
     }
@@ -87,18 +91,26 @@ public class SystemClient implements AutoCloseable {
     protected Properties getPropertiesHelper(Builder builder) {
         try {
             Response response = builder.get();
+            // tag::out3[]
             System.out.println("Received response with status: " + response.getStatus());
+            // end::out3[]
             if (response.getStatus() == Status.OK.getStatusCode()) {
                 return response.readEntity(Properties.class);
             } else {
+                // tag::out4[]
                 System.out.println("Response Status is not OK.");
+                // end::out4[]
             }
         } catch (RuntimeException e) {
+            // tag::out5[]
             System.out.println("Runtime exception while invoking system service: "
                     + e.getMessage());
+            // end::out5[]
         } catch (Exception e) {
+            // tag::out6[]
             System.out.println("Unexpected exception while processing system service request: "
                     + e.getMessage());
+            // end::out6[]
         }
         return null;
     }

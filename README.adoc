@@ -243,12 +243,12 @@ When MicroProfile Telemetry is enabled, OpenTelemetry can automatically collect 
 
 // file0
 SystemClient.java
-[source, Java, linenums, role='code_column']
+[source, Java, linenums, role='code_column hide_tags=copyright']
 ----
 include::start/inventory/src/main/java/io/openliberty/guides/inventory/client/SystemClient.java[]
 ----
 
-Currently, the [hotspot file=0]`SystemClient` class uses `System.out.println` to log messages. To see how an exception is logged, go to http://localhost:9081/inventory/systems/unknown URL in your browser. This request targets a non-existent host and results in a `RuntimeException`.
+Currently, the [hotspot file=0]`SystemClient` class uses [hotspot=out1 hotspot=out2 hotspot=out3 hotspot=out4 hotspot=out5 hotspot=out6 file=0]`System.out.println` to log messages. To see how an exception is logged, go to http://localhost:9081/inventory/systems/unknown URL in your browser. This request targets a non-existent host and results in a `RuntimeException`.
 
 Open the Grafana dashboard at http://localhost:3000 and navigate to the **Explore** view. Select the **Loki** data source, filter by `service_name = inventory`, and enter `Runtime exception` in the **Line contains** field. Run the query. The log message appears as follows:
 
@@ -270,7 +270,7 @@ To write structured logs that include log levels and context, update the applica
 ----
 
 SystemClient.java
-[source, Java, linenums, role='code_column']
+[source, Java, linenums, role='code_column hide_tags=copyright']
 ----
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/client/SystemClient.java[]
 ----
