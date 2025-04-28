@@ -52,24 +52,32 @@ public class InventoryManager {
     @PostConstruct
     public void init() {
         // tag::counterBuilder[]
+        // tag::inventoryListCount[]
         listCounter = meter.counterBuilder("inventory.list.count")
+        // end::inventoryListCount[]
             .setDescription("Number of times the inventory list is requested")
             .setUnit("1")
             .build();
         // end::counterBuilder[]
 
         // tag::histogramBuilder[]
+        // tag::inventoryAddDuration[]
         addHistogram = meter.histogramBuilder("inventory.add.duration")
+        // end::inventoryAddDuration[]
             .setDescription("Time taken to add a system to the inventory")
             .setUnit("ms")
             .build();
         // end::histogramBuilder[]
 
         // tag::gaugeBuilder[]
+        // tag::inventorySize[]
         meter.gaugeBuilder("inventory.size")
+        // end::inventorySize[]
             .setDescription("Number of systems in the inventory")
             .setUnit("1")
+            // tag::buildWithCallback[]
             .buildWithCallback(g -> g.record((double) systems.size()));
+            // end::buildWithCallback[]
         // end::gaugeBuilder[]
     }
 
@@ -88,7 +96,9 @@ public class InventoryManager {
 
     // tag::add[]
     public void add(String host, Properties systemProps) {
+        // tag::addStart[]
         long start = System.currentTimeMillis();
+        // end::addStart[]
         try {
             Properties props = new Properties();
             props.setProperty("os.name", systemProps.getProperty("os.name"));
@@ -98,8 +108,10 @@ public class InventoryManager {
                 systems.add(system);
             }
         } finally {
+            // tag::addDuration[]
             long duration = System.currentTimeMillis() - start;
             addHistogram.record((double) duration);
+            // end::addDuration[]
         }
     }
     // end::add[]

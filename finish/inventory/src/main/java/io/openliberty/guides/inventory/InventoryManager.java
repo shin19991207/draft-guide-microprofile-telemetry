@@ -25,7 +25,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.DoubleHistogram;
-import io.opentelemetry.api.metrics.ObservableDoubleGauge;
 import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 
@@ -57,7 +56,7 @@ public class InventoryManager {
 
         addHistogram = meter.histogramBuilder("inventory.add.duration")
             .setDescription("Time taken to add a system to the inventory")
-            .setUnit("ms")
+            .setUnit("ns")
             .build();
 
         meter.gaugeBuilder("inventory.size")
@@ -73,15 +72,24 @@ public class InventoryManager {
         }
     }
 
+    // tag::listWithSpan[]
     @WithSpan
+    // end::listWithSpan[]
+    // tag::listMethod[]
     public InventoryList list() {
         listCounter.add(1);
         return new InventoryList(systems);
     }
+    // end::listMethod[]
 
+    // tag::addWithSpan[]
     @WithSpan("Inventory Manager Add")
+    // end::addWithSpan[]
+    // tag::addMethod[]
+    // tag::spanAttribute[]
     public void add(@SpanAttribute("hostname") String host, Properties systemProps) {
-        long start = System.currentTimeMillis();
+    // end::spanAttribute[]
+        long start = System.nanoTime();
         try {
             Properties props = new Properties();
             props.setProperty("os.name", systemProps.getProperty("os.name"));
@@ -91,10 +99,11 @@ public class InventoryManager {
                 systems.add(system);
             }
         } finally {
-            long duration = System.currentTimeMillis() - start;
+            long duration = System.nanoTime() - start;
             addHistogram.record((double) duration);
         }
     }
+    // end::addMethod[]
 
     int clear() {
         int propertiesClearedCount = systems.size();

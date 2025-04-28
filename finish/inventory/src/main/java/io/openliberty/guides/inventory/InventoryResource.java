@@ -38,8 +38,10 @@ public class InventoryResource {
     private InventoryManager manager;
     // end::manager[]
 
+    // tag::tracer[]
     @Inject
     private Tracer tracer;
+    // end::tracer[]
 
     @GET
     @Path("/{hostname}")
@@ -69,11 +71,13 @@ public class InventoryResource {
             getPropertiesSpan.addEvent("Received properties");
             // end::addEvent2[]
             manager.add(hostname, props);
+        // tag::finally[]
         } finally {
             // tag::end[]
             getPropertiesSpan.end();
             // end::end[]
         }
+        // end::finally[]
         // end::try[]
         return Response.ok(props).build();
 

@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -34,12 +33,12 @@ public class InventoryManager {
     private int SYSTEM_PORT;
 
     private List<SystemData> systems = Collections.synchronizedList(new ArrayList<>());
-    private SystemClient systemClient = new SystemClient();
 
     public Properties get(String hostname) {
-        systemClient.init(hostname, SYSTEM_PORT);
-        Properties properties = systemClient.getProperties();
-        return properties;
+        try (SystemClient client = new SystemClient()) {
+            client.init(hostname, SYSTEM_PORT);
+            return client.getProperties();
+        }
     }
 
     public InventoryList list() {
@@ -60,10 +59,5 @@ public class InventoryManager {
         int propertiesClearedCount = systems.size();
         systems.clear();
         return propertiesClearedCount;
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        systemClient.close();
     }
 }
