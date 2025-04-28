@@ -287,66 +287,66 @@ image::logger_log.png[java.util.logging log,align="center"]
 
 By default, OpenTelemetry collects only message logs. For details on how to include additional sources, see https://openliberty.io/docs/latest/microprofile-telemetry.html#logs[Collect logs from a specified source^].
 
-// // =================================================================================================
-// // Enabling explicit metrics using the OpenTelemetry API
-// // =================================================================================================
-// == Enabling explicit metrics using the OpenTelemetry API
+// =================================================================================================
+// Enabling explicit metrics using the OpenTelemetry API
+// =================================================================================================
+== Enabling explicit metrics using the OpenTelemetry API
 
-// In addition to the runtime metrics automatically collected with MicroProfile Telemetry, you can define custom metrics in your application by using the OpenTelemetry API.
+In addition to the runtime metrics automatically collected with MicroProfile Telemetry, you can define custom metrics in your application by using the OpenTelemetry API.
 
-// To enable access to the OpenTelemetry API in your application, you must make third-party APIs visible by updating the `server.xml` configuration.
+To enable access to the OpenTelemetry API in your application, you must make third-party APIs visible by updating the `server.xml` configuration.
 
-// [role="code_command hotspot file=0", subs="quotes"]
-// ----
-// #Replace the `server.xml` file of the inventory service:#
-// `inventory/src/main/liberty/config/server.xml`
-// ----
+[role="code_command hotspot file=0", subs="quotes"]
+----
+#Replace the `server.xml` file of the inventory service:#
+`inventory/src/main/liberty/config/server.xml`
+----
 
-// inventory/server.xml
-// [source, xml, linenums, role='code_column']
-// ----
-// include::finish/inventory/src/main/liberty/config/server.xml[]
-// ----
+inventory/server.xml
+[source, xml, linenums, role='code_column']
+----
+include::finish/inventory/src/main/liberty/config/server.xml[]
+----
 
-// The OpenTelemetry APIs are exposed as third-party APIs in Open Liberty. To make them accessible to your application, add the [hotspot=thirdParty file=0]`+third-party` value to the [hotspot=thirdParty file=0]`apiTypeVisibility` attribute of the [hotspot=thirdParty file=0]`classLoader` element in the `webApplication` configuration. This configuration adds `third-party` to the default list of API package types that are supported.
+The OpenTelemetry APIs are exposed as third-party APIs in Open Liberty. To make them accessible to your application, add the [hotspot=thirdParty file=0]`+third-party` value to the [hotspot=thirdParty file=0]`apiTypeVisibility` attribute of the [hotspot=thirdParty file=0]`classLoader` element in the `webApplication` configuration. This configuration adds `third-party` to the default list of API package types that are supported.
 
-// Once access to the OpenTelemetry API is configured, you can manually instrument your application to define custom metrics.
+Once access to the OpenTelemetry API is configured, you can manually instrument your application to define custom metrics.
 
-// [role="code_command hotspot file=1", subs="quotes"]
-// ----
-// #Replace the InventoryManager class.#
-// `inventory/src/main/java/io/openliberty/guides/inventory/InventoryManager.java`
-// ----
+[role="code_command hotspot file=1", subs="quotes"]
+----
+#Replace the InventoryManager class.#
+`inventory/src/main/java/io/openliberty/guides/inventory/InventoryManager.java`
+----
 
-// InventoryManager.java
-// [source, xml, linenums, role='code_column hide_tags=thirdPartyComment,thirdParty']
-// ----
-// include::staging/InventoryManager.java[]
-// ----
+InventoryManager.java
+[source, xml, linenums, role='code_column hide_tags=thirdPartyComment,thirdParty']
+----
+include::staging/InventoryManager.java[]
+----
 
-// Inject the OpenTelemetry [hotspot=meter file=1]`Meter` interface into the [hotspot file=1]`InventoryManager` class to define and collect application-specific metrics. This interface provides access to the OpenTelemetry metrics API, which includes instruments such as counters, histograms, and gauges to monitor application behavior and performance.
+Inject the OpenTelemetry [hotspot=meter file=1]`Meter` interface into the [hotspot file=1]`InventoryManager` class to define and collect application-specific metrics. This interface provides access to the OpenTelemetry metrics API, which includes instruments such as counters, histograms, and gauges to monitor application behavior and performance.
 
-// Use the [hotspot=counterBuilder file=1]`Meter.counterBuilder()` method to define a counter instrument named [hotspot=inventoryListCount file=1]`inventory.list.count`. This metric tracks how many times the inventory list is requested. Every time the [hotspot=list file=1]`list()` method is called, the counter is incremented by one to reflect a new request to view the inventory.
+Use the [hotspot=counterBuilder file=1]`Meter.counterBuilder()` method to define a counter instrument named [hotspot=inventoryListCount file=1]`inventory.list.count`. This metric tracks how many times the inventory list is requested. Every time the [hotspot=list file=1]`list()` method is called, the counter is incremented by one to reflect a new request to view the inventory.
 
-// Use the [hotspot=histogramBuilder file=1]`Meter.histogramBuilder()` method to define a histogram instrument named [hotspot=inventoryAddDuration file=1]`inventory.add.duration`. This metric measures the time it takes to add a system to the inventory. The [hotspot=addStart file=1]`start` time is recorded when the [hotspot=add file=1]`add()` method begins, and the [hotspot=addDuration file=1]`duration` is calculated and recorded when the method finishes.
+Use the [hotspot=histogramBuilder file=1]`Meter.histogramBuilder()` method to define a histogram instrument named [hotspot=inventoryAddDuration file=1]`inventory.add.duration`. This metric measures the time it takes to add a system to the inventory. The [hotspot=addStart file=1]`start` time is recorded when the [hotspot=add file=1]`add()` method begins, and the [hotspot=addDuration file=1]`duration` is calculated and recorded when the method finishes.
 
-// Use the [hotspot=gaugeBuilder file=1]`Meter.gaugeBuilder()` method to define a gauge named [hotspot=inventorySize file=1]`inventory.size`, which records the number of systems currently in the inventory. The [hotspot=buildWithCallback file=1]`buildWithCallback()` method allows the value to be updated dynamically, ensuring that the metric always reflects the current size of the list.
+Use the [hotspot=gaugeBuilder file=1]`Meter.gaugeBuilder()` method to define a gauge named [hotspot=inventorySize file=1]`inventory.size`, which records the number of systems currently in the inventory. The [hotspot=buildWithCallback file=1]`buildWithCallback()` method allows the value to be updated dynamically, ensuring that the metric always reflects the current size of the list.
 
-// For a full list of available metrics, see https://opentelemetry.io/docs/languages/java/api/#meter[Meter operations^] in the OpenTelemetry documentation. For more information about OpenTelemetry metrics, see the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/metrics/package-summary.html[OpenTelemetry metrics API documentation^].
+For a full list of available metrics, see https://opentelemetry.io/docs/languages/java/api/#meter[Meter operations^] in the OpenTelemetry documentation. For more information about OpenTelemetry metrics, see the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/metrics/package-summary.html[OpenTelemetry metrics API documentation^].
 
-// To check out the customized metrics, start by visiting the following URLs in your browser to trigger activities in the application:
+To check out the customized metrics, start by visiting the following URLs in your browser to trigger activities in the application:
 
-// * http://localhost:9081/inventory/systems/localhost adds your local system properties to the inventory.
+* http://localhost:9081/inventory/systems/localhost adds your local system properties to the inventory.
 
-// * http://localhost:9081/inventory/systems/127.0.0.1 adds the system properties for host `127.0.0.1` to the inventory.
+* http://localhost:9081/inventory/systems/127.0.0.1 adds the system properties for host `127.0.0.1` to the inventory.
 
-// * http://localhost:9081/inventory/systems displays the current contents of the inventory, which should now include two entries.
+* http://localhost:9081/inventory/systems displays the current contents of the inventory, which should now include two entries.
 
-// Next, open the Grafana dashboard at http://localhost:3000. In the **Explore** view, select the **Prometheus** data source and search for and visualize the `inventory_*` **Metric**. Alternatively, you can go to the **Drilldown -> Metrics** view and **Search metrics** for `inventory`.
+Next, open the Grafana dashboard at http://localhost:3000. In the **Explore** view, select the **Prometheus** data source and search for and visualize the `inventory_*` **Metric**. Alternatively, you can go to the **Drilldown -> Metrics** view and **Search metrics** for `inventory`.
 
-// image::inventory_custom_metrics.png[Inventory custom metrics,align="center"]
+image::inventory_custom_metrics.png[Inventory custom metrics,align="center"]
 
-// Try accessing the endpoints multiple times and refreshing the Grafana dashboard to observe how the metrics update in real time.
+Try accessing the endpoints multiple times and refreshing the Grafana dashboard to observe how the metrics update in real time.
 
 // // =================================================================================================
 // // Enabling explicit traces using the OpenTelemetry API
