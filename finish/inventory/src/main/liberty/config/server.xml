@@ -24,4 +24,6 @@
         <!-- end::thirdParty[] -->
     </webApplication>
 
+    <logging consoleLogLevel="INFO" />
+
 </server>
