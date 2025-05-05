@@ -24,7 +24,6 @@ import jakarta.ws.rs.core.Response.Status;
 
 public class SystemClient implements AutoCloseable {
 
-    // Constants for building URI to the system service.
     private final String SYSTEM_PROPERTIES = "/system/properties";
     private final String PROTOCOL = "http";
 
@@ -36,17 +35,16 @@ public class SystemClient implements AutoCloseable {
         this.initHelper(hostname, port);
     }
 
-    // Helper method to set the attributes.
     private void initHelper(String hostname, int port) {
         this.url = buildUrl(PROTOCOL, hostname, port, SYSTEM_PROPERTIES);
         this.clientBuilder = buildClientBuilder(this.url);
     }
 
-    // Wrapper function that gets properties
     public Properties getProperties() {
         return getPropertiesHelper(this.clientBuilder);
     }
 
+    // tag::doc[]
     /**
      * Builds the URI string to the system service for a particular host.
      * @param protocol
@@ -59,6 +57,7 @@ public class SystemClient implements AutoCloseable {
      *          - Note that the path needs to start with a slash!!!
      * @return String representation of the URI to the system properties service.
      */
+    // end::doc[]
     protected String buildUrl(String protocol, String host, int port, String path) {
         try {
             URI uri = new URI(protocol, null, host, port, path, null, null);
@@ -72,7 +71,6 @@ public class SystemClient implements AutoCloseable {
         }
     }
 
-    // Method that creates the client builder
     protected Builder buildClientBuilder(String urlString) {
         try {
             this.client = ClientBuilder.newClient();
@@ -87,7 +85,6 @@ public class SystemClient implements AutoCloseable {
         }
     }
 
-    // Helper method that processes the request
     protected Properties getPropertiesHelper(Builder builder) {
         try {
             Response response = builder.get();

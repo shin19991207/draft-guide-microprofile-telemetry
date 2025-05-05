@@ -30,7 +30,6 @@ public class SystemClient implements AutoCloseable {
     private static final Logger logger = Logger.getLogger(SystemClient.class.getName());
     // end::getLogger[]
 
-    // Constants for building URI to the system service.
     private final String SYSTEM_PROPERTIES = "/system/properties";
     private final String PROTOCOL = "http";
 
@@ -42,17 +41,16 @@ public class SystemClient implements AutoCloseable {
         this.initHelper(hostname, port);
     }
 
-    // Helper method to set the attributes.
     private void initHelper(String hostname, int port) {
         this.url = buildUrl(PROTOCOL, hostname, port, SYSTEM_PROPERTIES);
         this.clientBuilder = buildClientBuilder(this.url);
     }
 
-    // Wrapper function that gets properties
     public Properties getProperties() {
         return getPropertiesHelper(this.clientBuilder);
     }
 
+    // tag::doc[]
     /**
      * Builds the URI string to the system service for a particular host.
      * @param protocol
@@ -65,19 +63,20 @@ public class SystemClient implements AutoCloseable {
      *          - Note that the path needs to start with a slash!!!
      * @return String representation of the URI to the system properties service.
      */
+    // end::doc[]
     protected String buildUrl(String protocol, String host, int port, String path) {
         try {
             URI uri = new URI(protocol, null, host, port, path, null, null);
             return uri.toString();
         } catch (Exception e) {
             // tag::log1[]
-            logger.log(Level.SEVERE, "URISyntaxException while building system service URL", e);
+            logger.log(Level.SEVERE,
+                "URISyntaxException while building system service URL", e);
             // end::log1[]
             return null;
         }
     }
 
-    // Method that creates the client builder
     protected Builder buildClientBuilder(String urlString) {
         try {
             this.client = ClientBuilder.newClient();
@@ -85,33 +84,37 @@ public class SystemClient implements AutoCloseable {
             return builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             // tag::log2[]
-            logger.log(Level.SEVERE, "Exception while creating REST client builder", e);
+            logger.log(Level.SEVERE,
+                "Exception while creating REST client builder", e);
             // end::log2[]
             return null;
         }
     }
 
-    // Helper method that processes the request
     protected Properties getPropertiesHelper(Builder builder) {
         try {
             Response response = builder.get();
             // tag::log3[]
-            logger.log(Level.INFO, "Received response with status: {0}", response.getStatus());
+            logger.log(Level.INFO,
+                "Received response with status: {0}", response.getStatus());
             // end::log3[]
             if (response.getStatus() == Status.OK.getStatusCode()) {
                 return response.readEntity(Properties.class);
             } else {
                 // tag::log4[]
-                logger.log(Level.WARNING, "Response Status is not OK: {0}", response.getStatus());
+                logger.log(Level.WARNING,
+                    "Response Status is not OK: {0}", response.getStatus());
                 // end::log4[]
             }
         } catch (RuntimeException e) {
             // tag::log5[]
-            logger.log(Level.SEVERE, "Runtime exception while invoking system service", e);
+            logger.log(Level.SEVERE,
+                "Runtime exception while invoking system service", e);
             // end::log5[]
         } catch (Exception e) {
             // tag::log6[]
-            logger.log(Level.SEVERE, "Unexpected exception while processing system service request", e);
+            logger.log(Level.SEVERE,
+                "Unexpected exception while processing system service request", e);
             // end::log6[]
         }
         return null;
@@ -121,7 +124,10 @@ public class SystemClient implements AutoCloseable {
     public void close() {
         if (client != null) {
             client.close();
-            logger.info("SystemClient HTTP client closed.");
+            // tag::log7[]
+            logger.log(Level.INFO,
+                "SystemClient HTTP client closed.");
+            // end::log7[]
         }
     }
 }
