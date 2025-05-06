@@ -269,7 +269,9 @@ image::red_metrics.png[RED Metrics,align="center"]
 // =================================================================================================
 == Enhancing application logs
 
-When MicroProfile Telemetry is enabled, OpenTelemetry can automatically collect application and runtime logs from the Liberty message log stream. By default, this includes logs that are written with the `java.util.logging` API at the `INFO` level or higher. The `System.out` standard output and `System.err` standard error streams are also captured because Liberty routes them into the unified logging stream.
+When MicroProfile Telemetry is enabled, OpenTelemetry automatically collects logs from the Liberty message log stream. This includes logs written by the `java.util.logging` API at the `INFO` level or higher, as well as messages from the `System.out` standard output and `System.err` standard error streams. Liberty routes these standard streams into its unified logging framework, making them available for collection.
+
+While `System.out` and `System.err` are useful for quick debugging, they are limited in production environments. These streams lack structure, consistent severity levels, and the contextual metadata that is critical for monitoring distributed systems. In contrast, the `java.util.logging` API produces structured logs with fine-grained control over log levels, built-in support for exceptions, and better integration with telemetry tools like Grafana.
 
 // file0
 SystemClient.java
@@ -278,20 +280,19 @@ SystemClient.java
 include::start/inventory/src/main/java/io/openliberty/guides/inventory/client/SystemClient.java[]
 ----
 
-Currently, the [hotspot file=0]`SystemClient` class uses the [hotspot=out1 hotspot=out2 hotspot=out3 hotspot=out4 hotspot=out5 hotspot=out6 file=0]`System.out` stream to log messages. To see how an exception is logged, go to the http://localhost:9081/inventory/systems/unknown URL in your browser. This request targets a non-existent host and results in a `RuntimeException`.
+Currently, the [hotspot file=0]`SystemClient` class logs messages using [hotspot=out3 hotspot=out4 hotspot=out7 file=0]`System.out` and [hotspot=out1 hotspot=out2 hotspot=out5 hotspot=out6 file=0]`System.err`.
 
-Open the Grafana dashboard at the http://localhost:3000 URL and navigate to the **Explore** view. Select the **Loki** data source, filter by `service_name = inventory`, and enter `Runtime exception` in the **Line contains** field. Run the query. The log message appears as follows:
+To observe a basic standard output log, point your browser to the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at http://localhost:3000/. In the **Explore** view, select the **Loki** data source and filter by `service_name = inventory`. Expand the log entry for `Received response with status: 200`. The message appears as an `info`-level log, and the `io_openliberty_module` field is set to `SystemOut`.
 
-[role="no_copy"]
-----
-Runtime exception while invoking system service: RESTEASY004655: Unable to invoke request: java.net.UnknownHostException: badhost: nodename nor servname provided, or not known
-----
+image::log_system_out_println_ok.png[Log by using the System.out.println method,align="center"]
 
-Expand the log entry to view its detailed context. Because the message is printed using `System.out.println`, OpenTelemetry captures it as an `info`-level log.
+Now access the http://localhost:9081/inventory/systems/unknown URL to simulate an exception. This request targets a non-existent host and triggers a `RuntimeException`. Re-run the same Grafana query. The resulting log appears with a `warn` level and the module set to `SystemErr`. The stack trace is embedded directly in the log body, making it harder to parse programmatically.
 
-image::log_system_out_println.png[Log by using the System.out.println method,align="center"]
+image::log_system_out_println_exception.png[Log by using the System.out.println method,align="center"]
 
-To write structured logs that include log levels and context, update the application to use the `java.util.logging` API.
+Although both `System.out` and `System.err` logs are collected, you can see that they do not provide structured metadata. You cannot filter logs by severity beyond the basic `info` and `warn` levels, nor can you separate stack traces or correlate logs with the context effectively.
+
+To enable structured logging, update your application to use the `java.util.logging` API.
 
 [role="code_command hotspot file=1", subs="quotes"]
 ----
@@ -305,15 +306,31 @@ SystemClient.java
 include::finish/inventory/src/main/java/io/openliberty/guides/inventory/client/SystemClient.java[]
 ----
 
-The updated [hotspot file=1]`SystemClient` class uses the [hotspot=getLogger file=1]`Logger.getLogger()` method to retrieve a logger instance and the [hotspot=log1 hotspot=log2 hotspot=log3 hotspot=log4 hotspot=log5 hotspot=log6 hotspot=log7 file=1]`Logger.log()` method to emit log messages at specific levels like [hotspot=log3 hotspot=log7 file=1]`INFO`, [hotspot=log4 file=1]`WARNING`, or [hotspot=log1 hotspot=log2 hotspot=log5 hotspot=log6 file=1]`SEVERE` based on the context.
+Update the [hotspot file=1]`SystemClient` class in the `inventory` service to use the [hotspot=getLogger file=1]`Logger.getLogger()` method to retrieve a logger instance, and the [hotspot=log1 hotspot=log2 hotspot=log3 hotspot=log4 hotspot=log5 hotspot=log6 hotspot=log7 file=1]`Logger.log()` method to emit log messages at specific levels like [hotspot=log3 hotspot=log7 file=1]`INFO`, [hotspot=log4 file=1]`WARNING`, or [hotspot=log1 hotspot=log2 hotspot=log5 hotspot=log6 file=1]`SEVERE` based on the context.
 
 Because you are running the `inventory` service in dev mode, the changes that you made are automatically picked up.
 
-Point your browser to the http://localhost:9081/inventory/systems/unknown URL again and re-run the same **Loki** query in **Grafana**. You can now see the log appears with the appropriate severity level as `error`.
+Return to the http://localhost:9081/inventory/systems/localhost URL and re-run the Loki query in Grafana. This time, the log is more structured. The `io_openliberty_module` field contains the actual logger name, making it easier to trace log origins.
 
-image::log_logger.png[Log by using the java.util.logging API,align="center"]
+image::log_logger_ok.png[Log by using the java.util.logging API,align="center"]
 
-// When MicroProfile Telemetry is enabled, logs are enriched with trace context such as trace and span IDs. In an expanded log view, you can click the button next to the `trace_id` field to jump directly to the related trace, making it easier to correlate logs with request activity.
+Access the http://localhost:9081/inventory/systems/unknown URL again to generate an exception. The resulting log now includes the defined severity level (`error`), the structured `exception_stacktrace`, and the `exception_type` field such as `jakarta.ws.rs.ProcessingException`.
+
+image::log_logger_exception.png[Log by using the java.util.logging API,align="center"]
+
+[role="code_command hotspot file=2", subs="quotes"]
+----
+#Replace the SystemResource class.#
+`system/src/main/java/io/openliberty/guides/system/SystemResource.java`
+----
+
+SystemResource.java
+[source, Java, linenums, role='code_column hide_tags=copyright']
+----
+include::finish/system/src/main/java/io/openliberty/guides/system/SystemResource.java[]
+----
+
+Update the [hotspot file=2]`SystemResource` class in the `system` service to use the same logging approach. This ensures consistent logging across services. To view logs from both services together, open the **Drilldown -> Logs** view in Grafana. You can now analyze logs across distributed systems in a single interface.
 
 By default, OpenTelemetry collects only message logs. For details on how to include additional sources, see https://openliberty.io/docs/latest/microprofile-telemetry.html#logs[Collect logs from a specified source^].
 

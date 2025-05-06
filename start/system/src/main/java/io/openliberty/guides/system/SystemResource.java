@@ -26,6 +26,7 @@ public class SystemResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Properties getProperties() {
+        System.out.println("Received request to fetch system properties.");
         return System.getProperties();
     }
 }

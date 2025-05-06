@@ -64,7 +64,7 @@ public class SystemClient implements AutoCloseable {
             return uri.toString();
         } catch (Exception e) {
             // tag::out1[]
-            System.out.println("URISyntaxException while building system service URL: "
+            System.err.println("URISyntaxException while building system service URL: "
                     + e.getMessage());
             // end::out1[]
             return null;
@@ -78,7 +78,7 @@ public class SystemClient implements AutoCloseable {
             return builder.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             // tag::out2[]
-            System.out.println("Exception while creating REST client builder: "
+            System.err.println("Exception while creating REST client builder: "
                     + e.getMessage());
             // end::out2[]
             return null;
@@ -100,12 +100,12 @@ public class SystemClient implements AutoCloseable {
             }
         } catch (RuntimeException e) {
             // tag::out5[]
-            System.out.println("Runtime exception while invoking system service: "
+            System.err.println("Runtime exception while invoking system service: "
                     + e.getMessage());
             // end::out5[]
         } catch (Exception e) {
             // tag::out6[]
-            System.out.println("Unexpected exception while processing system service request: "
+            System.err.println("Unexpected exception while processing system service request: "
                     + e.getMessage());
             // end::out6[]
         }
@@ -116,6 +116,9 @@ public class SystemClient implements AutoCloseable {
     public void close() {
         if (client != null) {
             client.close();
+            // tag::out7[]
+            System.out.println("SystemClient HTTP client closed.");
+            // end::out7[]
         }
     }
 }

@@ -12,6 +12,7 @@
 package io.openliberty.guides.system;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.GET;
@@ -23,9 +24,12 @@ import jakarta.ws.rs.core.MediaType;
 @Path("properties")
 public class SystemResource {
 
+    private static final Logger logger = Logger.getLogger(SystemResource.class.getName());
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Properties getProperties() {
+        logger.info("Received request to fetch system properties.");
         return System.getProperties();
     }
 }
