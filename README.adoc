@@ -282,7 +282,7 @@ include::start/inventory/src/main/java/io/openliberty/guides/inventory/client/Sy
 
 Currently, the [hotspot file=0]`SystemClient` class logs messages using [hotspot=out3 hotspot=out4 hotspot=out7 file=0]`System.out` and [hotspot=out1 hotspot=out2 hotspot=out5 hotspot=out6 file=0]`System.err`.
 
-To observe a basic standard output log, point your browser to the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at http://localhost:3000/. In the **Explore** view, select the **Loki** data source and filter by `service_name = inventory`. Expand the log entry for `Received response with status: 200`. The message appears as an `info`-level log, and the `io_openliberty_module` field is set to `SystemOut`.
+To observe a basic standard output log, point your browser to the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at the http://localhost:3000/ URL. In the **Explore** view, select the **Loki** data source and filter by `service_name = inventory`. Expand the log entry for `Received response with status: 200`. The message appears as an `info`-level log, and the `io_openliberty_module` field is set to `SystemOut`.
 
 image::log_system_out_println_ok.png[Log by using the System.out.println method,align="center"]
 
