@@ -308,7 +308,7 @@ include::finish/inventory/src/main/java/io/openliberty/guides/inventory/client/S
 
 Update the [hotspot file=1]`SystemClient` class in the `inventory` service to use the [hotspot=getLogger file=1]`Logger.getLogger()` method to retrieve a logger instance, and the [hotspot=log1 hotspot=log2 hotspot=log3 hotspot=log4 hotspot=log5 hotspot=log6 hotspot=log7 file=1]`Logger.log()` method to emit log messages at specific levels like [hotspot=log3 hotspot=log7 file=1]`INFO`, [hotspot=log4 file=1]`WARNING`, or [hotspot=log1 hotspot=log2 hotspot=log5 hotspot=log6 file=1]`SEVERE` based on the context.
 
-Because you are running the `inventory` service in dev mode, the changes that you made are automatically picked up.
+Because you are running the services in dev mode, the changes that you made are automatically picked up.
 
 Return to the http://localhost:9081/inventory/systems/localhost URL and re-run the Loki query in Grafana. This time, the log is more structured. The `io_openliberty_module` field contains the actual logger name, making it easier to trace log origins.
 
