@@ -317,6 +317,7 @@ image::log_logger_ok.png[Log by using the java.util.logging API,align="center"]
 Access the http://localhost:9081/inventory/systems/unknown URL again to generate an exception. The resulting log now includes the defined severity level (`error`), the structured `exception_stacktrace`, and the `exception_type` field such as `jakarta.ws.rs.ProcessingException`.
 
 image::log_logger_exception.png[Log by using the java.util.logging API,align="center"]
+{empty} +
 
 [role="code_command hotspot file=2", subs="quotes"]
 ----
