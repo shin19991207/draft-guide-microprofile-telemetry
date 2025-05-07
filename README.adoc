@@ -133,7 +133,7 @@ image::metrics_overview.png[Metrics overview,align="center"]
 
 3. Expand a log entry to view the full message along with its trace context.
 
-image::log_detail_example.png[Example of log detail,align="center"]
+image::log_logger_ok.png[Example of log detail,align="center"]
 {empty} +
 
 After you're finished reviewing the application, stop the Open Liberty instances by pressing `CTRL+C` in the command-line sessions where you ran the `system` and `inventory` services. Alternatively, you can run the following goals from the `finish` directory in another command-line session:
