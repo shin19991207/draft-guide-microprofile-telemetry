@@ -51,8 +51,6 @@ Before you begin, ensure that Docker is installed and running on your system. Fo
 
 The https://hub.docker.com/r/grafana/otel-lgtm[Grafana OTel LGTM Docker image^] provides an all-in-one setup that includes an OpenTelemetry Collector, which receives telemetry data and forwards it to Tempo for traces, Prometheus for metrics, and Loki for logs. The collected data can be visualized by Grafana.
 
-You will use Docker to start the Grafana OTel LGTM stack, which serves as the OpenTelemetry-compatible backend for collecting and visualizing telemetry data.
-
 Start the Grafana OTel LGTM stack by running the following Docker command:
 
 [role="command"]
