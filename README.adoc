@@ -34,9 +34,11 @@ Learn how to enable and customize the collection of traces, metrics, and logs fr
 // =================================================================================================
 == What you'll learn
 
-...
+In a microservices architecture, it can be difficult to understand how services interact, where latency occurs, and what causes failures. Without visibility across service boundaries, diagnosing issues and tuning performance can become slow and error-prone.
 
-// TODO
+Observability helps address these challenges by capturing telemetry data such as logs, metrics, and traces. https://opentelemetry.io/[OpenTelemetry^] is an open-source framework that provides APIs, SDKs, and tools for creating and managing this telemetry data. MicroProfile Telemetry adopts OpenTelemetry so your MicroProfile applications benefit from both manual and automatic traces and metrics. With observability enabled, telemetry data from your services can be collected and exported through an OpenTelemetry Collector to any OpenTelemetry-compatible backend such as the https://github.com/grafana/docker-otel-lgtm/?tab=readme-ov-file#docker-otel-lgtm[Grafana OTel LGTM Stack^].
+
+The diagram shows multiple services, but for simplicity, this guide configures only the `system` and `inventory` services to demonstrate observability in a distributed environment. You'll learn how to enable the automatic collection of logs, metrics, and traces, and how to enhance observability by adding custom spans and metrics using OpenTelemetry annotations and APIs. You'll also collect application and runtime logs through a standardized mechanism.
 
 image::architecture_diagram.png[Application architecture,align="center"]
 
@@ -47,7 +49,7 @@ image::architecture_diagram.png[Application architecture,align="center"]
 
 Before you begin, ensure that Docker is installed and running on your system. For installation instructions, see the https://docs.docker.com/get-started/get-docker/[official Docker documentation^].
 
-The https://github.com/grafana/docker-otel-lgtm/?tab=readme-ov-file#docker-otel-lgtm[Grafana OTel LGTM Stack^] is an all-in-one Docker image containing an OpenTelemetry Collector that receives and forwards telemetry data to Tempo for traces, Prometheus for metrics, and Loki for logs. The collected data can be visualized by Grafana.
+The https://hub.docker.com/r/grafana/otel-lgtm[Grafana OTel LGTM Docker image^] provides an all-in-one setup that includes an OpenTelemetry Collector, which receives telemetry data and forwards it to Tempo for traces, Prometheus for metrics, and Loki for logs. The collected data can be visualized by Grafana.
 
 You will use Docker to start the Grafana OTel LGTM stack, which serves as the OpenTelemetry-compatible backend for collecting and visualizing telemetry data.
 
@@ -481,6 +483,8 @@ image::inventory_service_spans.png[Get traces for the inventory service,align="c
 To test a failure case, go to the http://localhost:9081/inventory/systems/unknown URL and run the same trace query in Grafana. There are two spans from the `inventory` service. You'll see the `GettingProperties` span. Expan the `GettingProperties` span and its **Events** field. You can see the `Cannot get properties` event.
 
 image::log_at_gettingProperties.png[Log at GettingProperties span,align="center"]
+
+For a more detailed example of distributed tracing, refer to the https://openliberty.io/guides/microprofile-telemetry-jaeger.html[Enabling distributed tracing in microservices with OpenTelemetry and Jaeger^] guide.
 
 // =================================================================================================
 // Testing the application 
