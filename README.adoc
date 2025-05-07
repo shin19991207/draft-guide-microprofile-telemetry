@@ -393,7 +393,7 @@ When naming metrics, follow OpenTelemetry's https://opentelemetry.io/docs/specs/
 
 To learn more about how to define and use metrics in your application, refer to the https://opentelemetry.io/docs/languages/java/api/#meter[Meter operations^] for a full list of available metrics, or the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/metrics/package-summary.html[OpenTelemetry metrics API reference^].
 
-To view the custom metrics, first trigger activity in the application by visiting the following URLs in your browser:
+Now, to view the custom metrics, first trigger activity in the application by visiting the following URLs in your browser:
 
 * Visit the http://localhost:9081/inventory/systems/localhost URL to add your local system properties to the inventory.
 
