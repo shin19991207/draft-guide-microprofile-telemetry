@@ -221,7 +221,7 @@ For more information about these and other Telemetry properties, see the https:/
 
 // === Viewing the default telemetry data
 
-Start the services to begin collecting telemetry data.
+Now, start the services to begin collecting telemetry data.
 
 When you run Open Liberty in https://openliberty.io/docs/latest/development-mode.html[dev mode^], dev mode listens for file changes and automatically recompiles and deploys your updates whenever you save a new change. Run the following command to start the `system` service in dev mode:
 
@@ -254,18 +254,22 @@ To explore the automatic telemetry data, open the Grafana dashboard at the http:
 View the traces that were automatically created from your request in the Grafana dashboard. From the left menu, open the **Explore** view and select **Tempo** as the data source. For **Query type**, choose `Search`, then click **Run query**. You will see that the first result is the trace for the `GET /inventory/systems/{hostname}` request from the `inventory` service. Click the trace ID to open the trace details and verify that there are two spans from the `inventory` service and one span from the `system` service.
 
 image::inventory_default_spans.png[Inventory default spans,align="center"]
+{empty} +
 
 View the messages logs to see timestamped events from the server startup in the dashboard. Navigate to the **Drilldown -> Logs** from the menu. You can click on **Show logs** from each service to see the detailed context for each log.
 
 image::logs_server_startup.png[Server startup logs,align="center"]
+{empty} +
 
 View an overview of the JVM metrics to get insights into class count, CPU usage, and heap memory utilization. Open the **Dashboards** view from menu and select the **JVM Overview (OpenTelemetry)** dashboard.
 
 image::jvm_overview.png[JVM Overview,align="center"]
+{empty} +
 
 Open the **RED Metrics (classic histogram)** dashboard to get an overview of the HTTP request performance.
 
 image::red_metrics.png[RED Metrics,align="center"]
+{empty} +
 
 // =================================================================================================
 // Enhancing application logs
@@ -288,10 +292,12 @@ Currently, the [hotspot file=0]`SystemClient` class logs messages using [hotspot
 To observe a basic standard output log, point your browser to the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at the http://localhost:3000/ URL. In the **Explore** view, select the **Loki** data source and filter by `service_name = inventory`. Expand the log entry for `Received response with status: 200`. The message appears as an `info`-level log, and the `io_openliberty_module` field is set to `SystemOut`.
 
 image::log_system_out_println_ok.png[Log by using the System.out.println method,align="center"]
+{empty} +
 
 Now access the http://localhost:9081/inventory/systems/unknown URL to simulate an exception. This request targets a non-existent host and triggers a `RuntimeException`. Re-run the same Grafana query. The resulting log appears with a `warn` level and the module set to `SystemErr`. The stack trace is embedded directly in the log body, making it harder to parse programmatically.
 
 image::log_system_out_println_exception.png[Log by using the System.out.println method,align="center"]
+{empty} +
 
 Although both `System.out` and `System.err` logs are collected, you can see that they do not provide structured metadata. You cannot filter logs by severity beyond the basic `info` and `warn` levels, nor can you separate stack traces or correlate logs with the context effectively.
 
@@ -383,9 +389,9 @@ Use the [hotspot=histogramBuilder file=1]`Meter.histogramBuilder()` method to de
 
 Use the [hotspot=gaugeBuilder file=1]`Meter.gaugeBuilder()` method to define a gauge named [hotspot=inventorySize file=1]`inventory.size`, which records the number of systems currently in the inventory. The [hotspot=buildWithCallback file=1]`buildWithCallback()` method allows the value to be updated dynamically, ensuring that the metric always reflects the current size of the list.
 
-Note that the metric names and attributes need to follow OpenTelemetry's https://opentelemetry.io/docs/specs/semconv/general/metrics/[general naming guidelines].
+When naming metrics, follow OpenTelemetry's https://opentelemetry.io/docs/specs/semconv/general/metrics/[general naming guidelines] to ensure compatibility. 
 
-For a full list of available metrics, see https://opentelemetry.io/docs/languages/java/api/#meter[Meter operations^] in the OpenTelemetry documentation. For more information about OpenTelemetry metrics, see the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/metrics/package-summary.html[OpenTelemetry metrics API documentation^].
+To learn more about how to define and use metrics in your application, refer to the https://opentelemetry.io/docs/languages/java/api/#meter[Meter operations^] for a full list of available metrics, or the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/metrics/package-summary.html[OpenTelemetry metrics API reference^].
 
 To view the custom metrics, first trigger activity in the application by visiting the following URLs in your browser:
 
@@ -398,6 +404,7 @@ To view the custom metrics, first trigger activity in the application by visitin
 Next, open the Grafana dashboard at the http://localhost:3000 URL. From the left menu, navigate to **Drilldown -> Metrics**, then enter `inventory` in the **Search metrics** field to explore the metrics exposed by the service. You will see a result similar to the following:
 
 image::inventory_custom_metrics.png[Inventory custom metrics,align="center"]
+{empty} +
 
 Note the difference between the metric name you define and the name you see in Grafana. For details on how OpenTelemetry metrics are transformed when exported to Prometheus, see the https://opentelemetry.io/docs/specs/otel/compatibility/prometheus_and_openmetrics/#otlp-metric-points-to-prometheus[OTLP Metric points to Prometheus^] section of the OpenTelemetry specification.
 
@@ -439,12 +446,14 @@ To enrich spans with additional context, you can annotate method parameters with
 To view the generated spans, visit the http://localhost:9081/inventory/systems URL and open the Grafana dashboard at the http://localhost:3000 URL. In the **Explore** view, select the **Tempo** data source, select `Search` as **Query type**, filter by `Service Name = inventory`, and **Run query**. You'll see the result as:
 
 image::inventory_manager_span.png[Inventory Manager span,align="center"]
+{empty} +
 
 Verify that there are two spans from the `inventory` service. Expand each span to view its details. You'll see the `InventoryManager.list` span that is created by the [hotspot=addWithSpan hotspot=listWithSpan file=1]`@WithSpan` annotation.
 
 To check out the information generated by the `@SpanAttribute` annotation, visit the http://localhost:9081/inventory/systems/localhost URL and then re-run your Grafana query. You will see the following result:
 
 image::inventory_service_4_spans.png[Get traces for the inventory service,align="center"]
+{empty} +
 
 Verify that there are three spans from the `inventory` service and one span from the `system` service. Expand the `Inventory Manager Add` span and its **Span Attributes** field. You can see the `hostname` attribute with the `localhost` value that is created by the [hotspot=spanAttribute file=1]`@SpanAttribute` annotation.
 
@@ -480,10 +489,12 @@ For more information about OpenTelemetry distributed tracing, see the https://ww
 To see these spans and events, visit the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at the http://localhost:3000 URL. In the **Explore** view, select the **Tempo** data source and filter by the `inventory` service. You will see a trace that includes the `GettingProperties` span with the Received properties event.
 
 image::inventory_service_spans.png[Get traces for the inventory service,align="center"]
+{empty} +
 
 To test a failure case, go to the http://localhost:9081/inventory/systems/unknown URL and run the same trace query in Grafana. There are two spans from the `inventory` service. You'll see the `GettingProperties` span. Expan the `GettingProperties` span and its **Events** field. You can see the `Cannot get properties` event.
 
 image::log_at_gettingProperties.png[Log at GettingProperties span,align="center"]
+{empty} +
 
 For a more detailed example of distributed tracing, refer to the https://openliberty.io/guides/microprofile-telemetry-jaeger.html[Enabling distributed tracing in microservices with OpenTelemetry and Jaeger^] guide.
 
