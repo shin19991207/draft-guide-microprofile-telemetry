@@ -114,6 +114,7 @@ To explore the telemetry data, open the Grafana dashboard at the http://localhos
 5. Click a trace ID to inspect the spans and details from the `inventory` or `system` services.
 
 image::inventory_service_spans.png[Get /localhost traces for the inventory service,align="center"]
+{empty} +
 
 **View metrics with Prometheus:**
 
@@ -122,6 +123,7 @@ image::inventory_service_spans.png[Get /localhost traces for the inventory servi
 2. For a more detailed view of any metric, click the **Select** button next to its graph.
 
 image::metrics_overview.png[Metrics overview,align="center"]
+{empty} +
 
 **View logs with Loki:**
 
@@ -132,6 +134,7 @@ image::metrics_overview.png[Metrics overview,align="center"]
 3. Expand a log entry to view the full message along with its trace context.
 
 image::log_detail_example.png[Example of log detail,align="center"]
+{empty} +
 
 After you're finished reviewing the application, stop the Open Liberty instances by pressing `CTRL+C` in the command-line sessions where you ran the `system` and `inventory` services. Alternatively, you can run the following goals from the `finish` directory in another command-line session:
 
@@ -212,7 +215,7 @@ system/bootstrap.properties
 include::finish/system/src/main/liberty/config/bootstrap.properties[]
 ----
 
-Similarly, configure the OpenTelemetry properties in the [hotspot file=3]`bootstrap.properties` file for the `system` service.
+Similarly, configure the [hotspot=otel file=3]`otel.*` properties in the [hotspot file=3]`bootstrap.properties` file for the `system` service.
 
 For more information about these and other Telemetry properties, see the https://openliberty.io/docs/latest/reference/microprofile-config-properties.html#telemetry[MicroProfile Config properties for MicroProfile Telemetry^] documentation.
 
