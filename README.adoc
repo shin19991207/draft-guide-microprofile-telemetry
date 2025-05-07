@@ -38,7 +38,7 @@ In a microservices architecture, it can be difficult to understand how services 
 
 Observability helps address these challenges by capturing telemetry data such as logs, metrics, and traces. https://opentelemetry.io/[OpenTelemetry^] is an open-source framework that provides APIs, SDKs, and tools for generating and managing this data. MicroProfile Telemetry adopts OpenTelemetry to enable both automatic and manual instrumentation in MicroProfile applications. Traces and metrics, along with runtime and application logs, can be exported in a standardized format through an OpenTelemetry Collector to any compatible backend, such as the https://github.com/grafana/docker-otel-lgtm/?tab=readme-ov-file#docker-otel-lgtm[Grafana OTel LGTM Stack^].
 
-The diagram shows multiple services, but for simplicity, this guide configures only the `system` and `inventory` services to demonstrate observability in a distributed environment. You’ll learn how to enable the automatic collection of logs, metrics, and traces, and how to enhance observability by capturing logs in a standardized way and adding custom spans and metrics.
+The diagram shows multiple services, but for simplicity, this guide configures only the `system` and `inventory` services to demonstrate observability in a distributed environment. In this guide, you'll learn how to enable the automatic collection of logs, metrics, and traces. You'll also learn how to enhance observability by capturing logs in a standardized way and adding custom spans and metrics.
 
 image::architecture_diagram.png[Application architecture,align="center"]
 
