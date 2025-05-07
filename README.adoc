@@ -484,7 +484,7 @@ The [hotspot=scope file=0]`makeCurrent()` method sets the span as the current sp
 
 Use the [hotspot=addEvent1 hotspot=addEvent2 file=0]`addEvent()` method to add events to the span. In this example, the code adds one event when the properties are received and another when the request fails.
 
-For more information about OpenTelemetry distributed tracing, see the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/trace/package-summary.html[OpenTelemetry distributed tracing API documentation^]. You can also refer to the https://openliberty.io/guides/microprofile-telemetry-jaeger.html[Enabling distributed tracing in microservices with OpenTelemetry and Jaeger^] guide for details of tracing instrumentation in Open Liberty.
+For more information about OpenTelemetry distributed tracing, see the https://www.javadoc.io/doc/io.opentelemetry/opentelemetry-api/latest/io/opentelemetry/api/trace/package-summary.html[OpenTelemetry distributed tracing API documentation^]. You can also refer to the https://openliberty.io/guides/microprofile-telemetry-jaeger.html[Enabling distributed tracing in microservices with OpenTelemetry and Jaeger^] guide for a more detailed example of tracing instrumentation in Open Liberty.
 
 To see these spans and events, visit the http://localhost:9081/inventory/systems/localhost URL and open the Grafana dashboard at the http://localhost:3000 URL. In the **Explore** view, select the **Tempo** data source and filter by the `inventory` service. You will see a trace that includes the `GettingProperties` span with the Received properties event.
 
@@ -495,8 +495,6 @@ To test a failure case, go to the http://localhost:9081/inventory/systems/unknow
 
 image::log_at_gettingProperties.png[Log at GettingProperties span,align="center"]
 {empty} +
-
-For a more detailed example of distributed tracing, refer to the https://openliberty.io/guides/microprofile-telemetry-jaeger.html[Enabling distributed tracing in microservices with OpenTelemetry and Jaeger^] guide.
 
 // =================================================================================================
 // Testing the application 
